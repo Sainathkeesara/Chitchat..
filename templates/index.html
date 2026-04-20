@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChitChat</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+  <div id="app">
+
+    <!-- ── Lobby ──────────────────────────────────────── -->
+    <div class="lobby">
+      <header class="header">
+        <div class="logo"><span class="a">Chit</span><span class="b">Chat</span></div>
+        <div class="live-badge">
+          <span class="live-dot"></span>
+          <span class="font-mono" id="room-count" style="font-size:0.875rem;color:#d1d5db;">0 rooms live</span>
+        </div>
+      </header>
+
+      <p class="tagline">anyone can join &middot; no one can remove you &middot; just talk</p>
+
+      <form id="create-form" class="create-form">
+        <input id="create-input" class="create-input" type="text" placeholder="Room name..." maxlength="48" />
+        <button id="create-btn" class="create-btn" type="submit" disabled>Create Room</button>
+      </form>
+
+      <div id="room-grid" class="room-grid"></div>
+
+      <div id="empty-state" class="empty-state">
+        <div class="empty-icon">🎙️</div>
+        <p class="empty-title">No rooms yet</p>
+        <p class="empty-sub">Create one to start chatting</p>
+      </div>
+    </div>
+
+    <!-- ── Name Modal ─────────────────────────────────── -->
+    <div id="modal-overlay" class="modal-overlay hidden">
+      <form id="modal-form" class="modal-box">
+        <h2 class="modal-title">What's your name?</h2>
+        <p class="modal-desc">This is how others will see you in the room.</p>
+        <input id="modal-input" class="modal-input" type="text" placeholder="Enter display name..." maxlength="24" />
+        <div class="modal-actions">
+          <button type="button" id="modal-cancel" class="modal-cancel">Cancel</button>
+          <button type="submit" id="modal-confirm" class="modal-confirm" disabled>Join</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- ── Call Panel ─────────────────────────────────── -->
+    <div id="call-panel" class="call-panel hidden">
+      <div class="call-inner">
+        <div class="call-header">
+          <div class="call-header-left">
+            <span id="call-room-name" class="call-room-name"></span>
+            <span class="card-live"><span class="card-live-dot"></span>LIVE</span>
+            <span id="call-count" class="call-meta"></span>
+          </div>
+          <span id="call-timer" class="call-timer">00:00</span>
+        </div>
+
+        <div id="participants-grid" class="participants-grid"></div>
+
+        <!-- Device selectors -->
+        <div id="device-panel" class="device-panel hidden">
+          <div class="device-row">
+            <label class="device-label" for="mic-select">🎤 Microphone</label>
+            <select id="mic-select" class="device-select" onchange="onMicChange(this.value)"></select>
+          </div>
+          <div class="device-row">
+            <label class="device-label" for="speaker-select">🔊 Speaker</label>
+            <select id="speaker-select" class="device-select" onchange="onSpeakerChange(this.value)"></select>
+          </div>
+        </div>
+
+        <div class="call-controls">
+          <button id="ctrl-mute" class="ctrl-btn mute-off" onclick="toggleMute()" title="Toggle mute (M)">🎤</button>
+          <button id="ctrl-settings" class="ctrl-btn settings-btn" onclick="toggleDevicePanel()" title="Audio settings">⚙️</button>
+          <button class="ctrl-leave" onclick="leaveRoom()" title="Leave room (Esc)">📵</button>
+          <button id="ctrl-deafen" class="ctrl-btn deafen-off" onclick="toggleDeafen()" title="Toggle deafen (D)">🔊</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

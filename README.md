@@ -1,68 +1,108 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# ChitChat — Audio Room Web App
 
-## Available Scripts
+A real-time audio chat room application built entirely in Python (FastAPI) with vanilla HTML/CSS/JS frontend.
 
-In the project directory, you. can rrun:
+## Features
 
-### `npm start`
+- Create and join audio rooms in real-time
+- WebRTC peer-to-peer audio between participants
+- Live speaking detection with visual indicators
+- Mute / Deafen controls with keyboard shortcuts
+- Max 20 participants per room
+- Auto-cleanup when rooms empty
+- No kick/remove — anyone can join, only you can leave
+- Dark theme with ambient gradients
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Prerequisites
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+- **Python 3.10+** — [Download Python](https://www.python.org/downloads/)
+- **pip** — comes bundled with Python
+- A modern browser (Chrome, Firefox, Edge) with microphone access
 
-### `npm test`
+## Setup & Run
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 1. Clone / navigate to the project
 
-### `npm run build`
+```bash
+cd project2
+```
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 2. Create a virtual environment (recommended)
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+```bash
+python -m venv venv
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Activate it:
 
-### `npm run eject`
+- **Windows (PowerShell):**
+  ```powershell
+  .\venv\Scripts\Activate.ps1
+  ```
+- **Windows (CMD):**
+  ```cmd
+  venv\Scripts\activate.bat
+  ```
+- **Linux / macOS:**
+  ```bash
+  source venv/bin/activate
+  ```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### 3. Install dependencies
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+pip install -r requirements.txt
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### 4. Run the server
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```bash
+uvicorn app:app --host 0.0.0.0 --port 3001 --reload
+```
 
-## Learn More
+### 5. Open in browser
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Navigate to **http://localhost:3001**
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+> To test audio between users, open two browser tabs (or two different browsers).
 
-### Code Splitting
+## Keyboard Shortcuts (while in a call)
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+| Key   | Action       |
+|-------|-------------|
+| `M`   | Toggle mute  |
+| `D`   | Toggle deafen|
+| `Esc` | Leave room   |
 
-### Analyzing the Bundle Size
+## Project Structure
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+```
+project2/
+├── app.py                  # FastAPI server (REST + WebSocket + WebRTC signaling)
+├── requirements.txt        # Python dependencies
+├── README.md               # This file
+├── templates/
+│   └── index.html          # Single-page HTML template
+└── static/
+    ├── css/
+    │   └── style.css       # All styles (dark theme, animations)
+    └── js/
+        └── app.js          # Client logic (UI, WebSocket, WebRTC, speaking detection)
+```
 
-### Making a Progressive Web App
+## How It Works
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+1. **Backend** — FastAPI serves the HTML page, REST endpoints for room CRUD, and a WebSocket for real-time updates + WebRTC signaling relay.
+2. **Frontend** — Vanilla JS manages UI state, connects to WebSocket for live room updates, and uses WebRTC for peer-to-peer audio.
+3. **Audio** — When you join a room, the browser captures your microphone. WebRTC peer connections are established with every other participant in a full-mesh topology. Speaking detection uses `AudioContext` + `AnalyserNode` to detect voice activity.
+4. **Mute** — Disables your local audio track (peers stop hearing you).
+5. **Deafen** — Mutes all remote audio elements (you stop hearing others).
 
-### Advanced Configuration
+## Troubleshooting
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+| Problem | Solution |
+|---------|----------|
+| "Mic access denied" in console | Allow microphone permission in browser settings |
+| No audio between tabs on same machine | Use two different browsers (e.g., Chrome + Firefox) |
+| WebSocket connection fails | Make sure the server is running on port 3001 |
+| Page won't load | Check that all files are in place and `uvicorn` is running |
